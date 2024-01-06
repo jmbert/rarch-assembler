@@ -1,0 +1,39 @@
+package rarch_parser
+
+type Parser Peg {
+
+}
+
+Program <- (Directive / Statement)* EOF
+
+Directive <- [ \t]* '.' Identifier [ \t]* Arguments? [ \t]* '\n'
+
+Statement <- [ \t]* Label? Instruction? [ \t]* '\n'
+
+Instruction <- Identifier [ \t]* Arguments?
+
+Label <- Identifier ':' [ \t]*
+
+Arguments <- (Argument ',' [ \t]*)* Argument
+
+Argument <- Register /
+			Immediate /
+			Identifier
+
+
+Register <- '$' Identifier
+
+Immediate <- HexNumber /
+			 DecimalNumber
+			 
+HexNumber <- '0x' ([0-9] / [[a-f]])+
+
+DecimalNumber <- [0-9]+
+
+EOF <- !.
+
+Identifier <- IdentStart CChar+
+
+IdentStart <- [[a-z]] / '_'
+
+CChar <- [[a-z]] / '_' / [0-9]
